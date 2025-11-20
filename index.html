@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Følgeseddel – Stanseværktøj</title>
+  <title>Digital Følgeseddel – Stanseværktøj</title>
 
   <style>
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -18,172 +18,97 @@
     :focus{outline:2px solid #94c5ff;outline-offset:1px}
 
     .topbar{background:#0a61ae;color:#fff;padding:8px 12px}
-    .toprow{display:-ms-flexbox;display:flex;-ms-align-items:center;align-items:center}
+    .toprow{display:flex;align-items:center}
     .brand{font-weight:800;letter-spacing:.2px}
-    .tl{
-      margin-left:auto;
-      font-size:11px;
-      opacity:.9;
+    .statuspill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid rgba(255,255,255,.35);
+      border-radius:999px;padding:4px 12px;margin-left:10px;
+      background:rgba(255,255,255,.08);font-size:12px;
     }
+    .dot{width:10px;height:10px;border-radius:999px;background:#17833e}
+    .dot.pending{background:#f59e0b}
+    .dot.error{background:#dc2626}
 
     .container{max-width:900px;margin:0 auto;padding:12px}
     .card{
-      background:#fff;
-      border:1px solid #e6ecf3;
-      border-radius:12px;
-      padding:12px 14px;
-      box-shadow:0 6px 20px rgba(15,23,42,.06);
-      margin-bottom:10px;
+      background:#fff;border:1px solid #e6ecf3;border-radius:12px;
+      padding:14px;box-shadow:0 6px 20px rgba(15,23,42,.06);margin-bottom:12px;
     }
-    h3{margin:0 0 6px}
-    label{
-      font-size:11px;
-      color:#6b7280;
-      display:block;
-      margin-bottom:3px;
-    }
+    h3{margin:0 0 8px}
+    label{font-size:11px;color:#6b7280;display:block;margin-bottom:3px}
+
     input,textarea{
-      width:100%;
-      border:1px solid #dfe7f2;
-      border-radius:10px;
-      padding:7px 9px;
-      background:#fff;
-      font-size:14px;
-      line-height:1.2;
-      font-family:inherit;
+      width:100%;border:1px solid #dfe7f2;border-radius:10px;
+      padding:7px 9px;background:#fff;font-size:14px;line-height:1.2;
     }
     textarea{min-height:70px}
 
     .hint{font-size:12px;color:#6b7280;margin-bottom:10px}
 
-    .row{
-      display:-ms-flexbox;display:flex;
-      -ms-flex-wrap:wrap;flex-wrap:wrap;
-      margin-left:-4px;
-      margin-right:-4px;
-    }
-    .field{
-      -ms-flex:1 1 220px;flex:1 1 220px;
-      padding-left:4px;
-      padding-right:4px;
-      margin-bottom:8px;
-    }
-    .field.small{
-      -ms-flex:0 0 200px;flex:0 0 200px;
-    }
-    .field.full{
-      -ms-flex:1 1 100%;flex:1 1 100%;
-    }
+    .row{display:flex;flex-wrap:wrap;margin-left:-4px;margin-right:-4px}
+    .field{flex:1 1 220px;padding-left:4px;padding-right:4px;margin-bottom:8px}
+    .field.small{flex:0 0 200px}
+    .field.full{flex:1 1 100%}
 
-    .section-title{
-      font-size:13px;
-      font-weight:600;
-      margin:8px 0 4px;
-      color:#111827;
-    }
+    .section-title{font-size:13px;font-weight:600;margin:10px 0 6px;color:#111827}
 
-    .checkbox-row{
-      display:-ms-flexbox;display:flex;
-      -ms-align-items:center;align-items:center;
-      font-size:13px;
-      margin-top:4px;
-    }
-    .checkbox-row input[type="checkbox"]{
-      width:auto;
-      margin-right:6px;
-    }
+    .checkbox-row{display:flex;align-items:center;font-size:13px;margin-top:4px}
+    .checkbox-row input{width:auto;margin-right:6px}
 
     .btn{
-      border:1px solid #dbe4ef;
-      background:#fff;
-      border-radius:10px;
-      padding:8px 12px;
-      font-weight:700;
-      cursor:pointer;
-      font-size:14px;
+      border:1px solid #dbe4ef;background:#fff;border-radius:10px;
+      padding:8px 12px;font-weight:700;cursor:pointer;font-size:14px;
     }
-    .btn-primary{
-      background:#e8f1ff;
-      border-color:#cfe2ff;
-      color:#0a3d91;
-    }
-    .btn-danger{
-      background:#fff1f1;
-      border-color:#f3b3b3;
-      color:#7f1d1d;
-    }
-    .buttons{ text-align:right; margin-top:4px; }
-    .buttons .btn{ margin-left:6px }
+    .btn-primary{background:#e8f1ff;border-color:#cfe2ff;color:#0a3d91}
+    .btn-danger{background:#fff1f1;border-color:#f3b3b3;color:#7f1d1d}
+    .buttons{text-align:right;margin-top:8px}
+    .buttons .btn{margin-left:6px}
 
+    /* Historik */
     .loglist{
-      list-style:none;
-      margin:0;
-      padding:0;
-      border:1px dashed #dbe4ef;
-      border-radius:10px;
-      background:#fff;
-      max-height:420px;
-      overflow:auto;
+      list-style:none;margin:0;padding:0;border:1px dashed #dbe4ef;
+      border-radius:10px;background:#fff;max-height:420px;overflow:auto;
     }
-    .logitem{
-      padding:8px;
-      border-bottom:1px solid #eef2f7;
-    }
+    .logitem{padding:10px;border-bottom:1px solid #eef2f7}
     .logitem:last-child{border-bottom:0}
 
-    .log-header{
-      display:-ms-flexbox;display:flex;
-      -ms-flex-wrap:wrap;flex-wrap:wrap;
-      margin-left:-4px;
-      margin-right:-4px;
-    }
-    .log-main{
-      padding-left:4px;
-      padding-right:4px;
-      font-size:13px;
-    }
-    .log-meta{
-      margin-left:auto;
-      padding-left:4px;
-      padding-right:4px;
-      text-align:right;
-      font-size:12px;
-      color:#6b7280;
-    }
+    .log-header{display:flex;flex-wrap:wrap}
+    .log-main{font-size:13px}
+    .log-meta{text-align:right;font-size:12px;margin-left:auto;color:#6b7280}
 
     .badge{
-      display:inline-block;
-      border-radius:999px;
-      padding:2px 8px;
-      font-size:11px;
-      border:1px solid #e2e8f0;
-      background:#f8fafc;
-      margin-right:6px;
+      display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;
+      border:1px solid #e2e8f0;background:#f8fafc;margin-right:6px;
     }
-    .badge-tool{ background:#e0f2fe;border-color:#bae6fd;color:#075985 }
-    .badge-adj{ background:#ede9fe;border-color:#ddd6fe;color:#4c1d95 }
-    .badge-knife{ background:#dcfce7;border-color:#bbf7d0;color:#166534 }
+    .badge-tool{background:#e0f2fe;border-color:#bae6fd;color:#075985}
+    .badge-adj{background:#ede9fe;border-color:#ddd6fe;color:#4c1d95}
+    .badge-knife{background:#dcfce7;border-color:#bbf7d0;color:#166534}
+
+    .editbox{
+      margin-top:10px;padding:10px;background:#f8fbff;
+      border:1px dashed #cfe2ff;border-radius:10px;display:none;
+    }
 
     .resetconfirm{
-      display:none;
-      margin-top:8px;
-      padding:8px;
-      border:1px solid #fecaca;
-      background:#fff1f2;
-      border-radius:10px;
-      font-size:13px;
+      display:none;margin-top:10px;padding:10px;border:1px solid #fecaca;
+      background:#fff1f2;border-radius:10px;font-size:13px;
     }
 
-    .err-msg{font-size:11px;color:#b91c1c;margin-top:2px;min-height:14px}
     .input-error{border-color:#dc2626;background:#fef2f2}
+    .err-msg{font-size:11px;color:#b91c1c;min-height:14px}
   </style>
 </head>
+
 <body>
 
   <div class="topbar">
     <div class="toprow">
-      <div class="brand">Digital Følgeseddel – Kniv Skift Eller Justering</div>
-      <div class="tl" id="statusText"></div>
+      <div class="brand">Digital Følgeseddel – Stanseværktøj</div>
+      <span class="statuspill">
+        <span id="dot" class="dot"></span>
+        <span id="statxt">Online</span>
+      </span>
     </div>
   </div>
 
@@ -197,11 +122,8 @@
         <b>Følgeseddel – Stanseværktøj</b><br>
         Den digitale blankette bruges til at registrere indstillinger ved justering eller knivskift. Registreringerne skal gør det muligt løbende at forudsige, hvornår der bør skiftes knive før en produktion eller omstilling. Udfyld blanketten hver gang. Dato for knivskift udfyldes kun ved et reelt skift..<br><br>
 
-        <b>Aktuel værdi</b> og <b>Justeret af</b> udfyldes kun ved indkøring eller justering i produktion
-        (og efter knivskift hvis der justeres).<br>
-        Knivskift kan ske før produktion, under indkøring, under produktion eller som forberedelse,
-        fx hvis kvaliteten vurderes utilstrækkelig.<br>
-        
+        <b>Aktuel værdi</b> og <b>Justeret af</b> udfyldes kun ved indkøring eller justering i produktion (og efter knivskift hvis der justeres).<br>
+        Knivskift kan ske før produktion, under indkøring, under produktion eller som forberedelse, fx hvis kvaliteten vurderes utilstrækkelig.
       </div>
 
       <form id="regForm" autocomplete="off">
@@ -209,7 +131,7 @@
         <div class="row">
           <div class="field small">
             <label>Værktøjsnr *</label>
-            <input id="tool-no" type="text" placeholder="fx T15050-10111">
+            <input id="tool-no" type="text">
             <div id="err-tool" class="err-msg"></div>
           </div>
 
@@ -220,44 +142,39 @@
           </div>
         </div>
 
-        <!-- SEKTION: VALG AF TYPE -->
         <div class="section-title">Denne registrering omfatter:</div>
         <div class="row">
           <div class="field small">
             <div class="checkbox-row">
-              <input id="adj-active" type="checkbox">
-              <label for="adj-active">Justeret / indkøring</label>
+              <input id="adj-active" type="checkbox"><label for="adj-active">Justeret / indkøring</label>
             </div>
           </div>
           <div class="field small">
             <div class="checkbox-row">
-              <input id="knife-active" type="checkbox">
-              <label for="knife-active">Knivskift udført</label>
+              <input id="knife-active" type="checkbox"><label for="knife-active">Knivskift udført</label>
             </div>
           </div>
         </div>
 
-        <!-- SEKTION: JUSTERING -->
         <div class="section-title">Justering / indkøring</div>
         <div class="row">
           <div class="field small">
             <label>Ønsket værdi [mm]</label>
-            <input id="desired" type="text" placeholder="fx 728,09">
+            <input id="desired" type="text">
             <div id="err-desired" class="err-msg"></div>
           </div>
           <div class="field small">
             <label>Aktuel værdi [mm]</label>
-            <input id="actual" type="text" placeholder="fx 727,91">
+            <input id="actual" type="text">
             <div id="err-actual" class="err-msg"></div>
           </div>
           <div class="field small">
             <label>Justeret af</label>
-            <input id="operator" type="text" placeholder="Initialer/navn">
+            <input id="operator" type="text">
             <div id="err-operator" class="err-msg"></div>
           </div>
         </div>
 
-        <!-- SEKTION: KNIVSKIFT -->
         <div class="section-title">Knivskift</div>
         <div class="row">
           <div class="field small">
@@ -267,7 +184,7 @@
         </div>
 
         <div class="field full">
-          <label>Bemærkninger (valgfrit)</label>
+          <label>Bemærkninger</label>
           <textarea id="notes"></textarea>
         </div>
 
@@ -288,44 +205,41 @@
       <h3>Historik</h3>
       <ul id="logList" class="loglist"></ul>
 
-      <div class="buttons" style="margin-top:8px">
-        <button type="button" class="btn btn-danger" id="btn-clear-log">Ryd lokal historik</button>
+      <div class="buttons">
+        <button id="btn-clear-log" class="btn btn-danger">Ryd lokal historik</button>
       </div>
 
       <div id="log-confirm" class="resetconfirm">
-        <b>Er du sikker?</b> Dette sletter kun lokal historik på denne PC.
-        <div class="buttons" style="margin-top:6px">
-          <button type="button" class="btn" id="btn-log-cancel">Fortryd</button>
-          <button type="button" class="btn btn-danger" id="btn-log-do">Slet historik</button>
+        <b>Er du sikker?</b>
+        <div class="buttons">
+          <button class="btn" id="btn-log-cancel">Fortryd</button>
+          <button class="btn btn-danger" id="btn-log-do">Slet</button>
         </div>
       </div>
+
     </div>
 
   </div>
 
-<script>
-/* ===== Hjælpere ===== */
+  <script>
+/* ===========================
+   HJÆLPEFUNKTIONER
+   =========================== */
 function $(id){return document.getElementById(id);}
 
 function loadJSON(k,def){
   try{
     var v = localStorage.getItem(k);
     return v ? JSON.parse(v) : def;
-  }catch(e){
-    return def;
-  }
+  }catch(e){return def;}
 }
 
 function saveJSON(k,v){
-  try{
-    localStorage.setItem(k,JSON.stringify(v));
-  }catch(e){}
+  try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){}
 }
 
 function removeStorage(k){
-  try{
-    localStorage.removeItem(k);
-  }catch(e){}
+  try{ localStorage.removeItem(k); }catch(e){}
 }
 
 function uuid(){
@@ -343,20 +257,38 @@ function todayIso(){
 }
 
 function fmtDate(d){
-  if(!d){return "-";}
+  if(!d)return "-";
   try{
-    var dt = new Date(d);
-    return dt.toLocaleDateString("da-DK");
+    return new Date(d).toLocaleDateString("da-DK");
   }catch(e){return d;}
 }
 
-/* ===== Keys ===== */
-var PFX          = "ppstanse2.";
-var KEY_LOG      = PFX + "log.v1";
+/* ===========================
+   KEYS / NØGLER
+   =========================== */
+var PFX          = "ppstans.final.";
 var KEY_DRAFT    = PFX + "draft.v1";
-var KEY_SETTINGS = PFX + "settings.v1";
+var KEY_LOG      = PFX + "history.v1";
+var KEY_SETTINGS = PFX + "settings.v1";   // gemmer værktøjsnr
+var KEY_EDIT     = PFX + "editdraft.v1";  // redigerings-udkast
+var KEY_OPENEDIT = PFX + "openEdit.v1";   // sidst åbne editor-id
 
-/* ===== Draft / autosave ===== */
+/* ===========================
+   SIDST ÅBNE EDITOR
+   =========================== */
+function saveOpenEditor(id){
+  saveJSON(KEY_OPENEDIT,id);
+}
+function loadOpenEditor(){
+  return loadJSON(KEY_OPENEDIT,null);
+}
+function clearOpenEditor(){
+  removeStorage(KEY_OPENEDIT);
+}
+
+/* ===========================
+   AUTOSAVE – FORMULAR
+   =========================== */
 function saveDraft(){
   var d = {
     tool:   $("tool-no").value,
@@ -371,225 +303,145 @@ function saveDraft(){
   };
   saveJSON(KEY_DRAFT,d);
 
+  // gem kun værktøjsnr i settings
   var s = loadJSON(KEY_SETTINGS,{});
-  s.operator = d.op || s.operator || "";
+  s.tool = d.tool || s.tool || "";
   saveJSON(KEY_SETTINGS,s);
 
-  var st = $("statusText");
-  if(st){st.innerHTML = "Udkast gemt lokalt";}
+  $("statxt").innerHTML = "Udkast gemt lokalt";
 }
 
 function restoreDraft(){
   var d = loadJSON(KEY_DRAFT,null);
   var s = loadJSON(KEY_SETTINGS,{});
-  if(!d){d={};}
-  $("tool-no").value      = d.tool  || "";
+  if(!d)d={};
+
+  $("tool-no").value      = d.tool  || s.tool || "";
   $("reg-date").value     = d.reg   || todayIso();
   $("adj-active").checked = d.adj   ? true : false;
   $("knife-active").checked = d.knife ? true : false;
   $("desired").value      = d.des   || "";
   $("actual").value       = d.act   || "";
-  $("operator").value     = d.op    || s.operator || "";
+  $("operator").value     = d.op    || "";
   $("knife-date").value   = d.kdate || "";
   $("notes").value        = d.notes || "";
 }
 
-/* ===== Historik ===== */
-function getLog(){ return loadJSON(KEY_LOG,[]); }
-function saveLog(x){ saveJSON(KEY_LOG,x); }
-
-function renderLog(){
-  var list = $("logList");
-  list.innerHTML = "";
-  var arr = getLog().slice();
-
-  // nyeste først (reg-dato + tid)
-  arr.sort(function(a,b){
-    if(a.regDate === b.regDate){
-      return (b.ts || "").localeCompare(a.ts || "");
-    }
-    return (b.regDate || "").localeCompare(a.regDate || "");
-  });
-
-  if(arr.length===0){
-    var li = document.createElement("li");
-    li.className = "logitem";
-    li.innerHTML = '<span class="hint">Ingen registreringer endnu.</span>';
-    list.appendChild(li);
-    return;
-  }
-
-  for(var i=0;i<arr.length;i++){
-    var r = arr[i];
-    var li = document.createElement("li");
-    li.className = "logitem";
-
-    var header = document.createElement("div");
-    header.className = "log-header";
-
-    var main = document.createElement("div");
-    main.className = "log-main";
-
-    var badges = '';
-    badges += '<span class="badge badge-tool">'+(r.toolNo||"-")+'</span>';
-    if(r.adjActive){
-      badges += '<span class="badge badge-adj">Justeret</span>';
-    }
-    if(r.knifeActive){
-      badges += '<span class="badge badge-knife">Knivskift</span>';
-    }
-
-    var mainLines = [];
-    mainLines.push('Registreret: '+fmtDate(r.regDate));
-
-    if(r.desired){
-      mainLines.push('Ønsket: '+r.desired+' mm');
-    }
-    if(r.actual){
-      mainLines.push('Aktuel: '+r.actual+' mm');
-    }
-
-    main.innerHTML = badges + '<div>'+mainLines.join(' · ')+'</div>';
-
-    var meta = document.createElement("div");
-    meta.className = "log-meta";
-    var metaLines = [];
-
-    if(r.adjActive && r.operator){
-      metaLines.push('Justeret af: '+r.operator);
-    }
-    if(r.knifeActive && r.knifeDate){
-      metaLines.push('Knivskift: '+fmtDate(r.knifeDate));
-    }
-    if(r.ts){
-      metaLines.push('Oprettet: '+fmtDate(r.ts));
-    }
-
-    meta.innerHTML = metaLines.join("<br>");
-
-    header.appendChild(main);
-    header.appendChild(meta);
-    li.appendChild(header);
-
-    if(r.notes){
-      var nd = document.createElement("div");
-      nd.style.marginTop = "4px";
-      nd.style.fontSize = "12px";
-      nd.style.color = "#374151";
-      nd.innerHTML = "Noter: " + r.notes;
-      li.appendChild(nd);
-    }
-
-    list.appendChild(li);
-  }
+/* ===========================
+   AUTOSAVE – REDIGERING
+   =========================== */
+function saveEditDraft(id,data){
+  var all = loadJSON(KEY_EDIT,{});
+  all[id] = data;
+  saveJSON(KEY_EDIT,all);
+}
+function loadEditDraft(id){
+  var all = loadJSON(KEY_EDIT,{});
+  return all[id] || null;
+}
+function clearEditDraft(id){
+  var all = loadJSON(KEY_EDIT,{});
+  if(all[id]){ delete all[id]; }
+  saveJSON(KEY_EDIT,all);
 }
 
-/* ===== Fejl / validering ===== */
+/* ===========================
+   HISTORIK DATA
+   =========================== */
+function getLog(){return loadJSON(KEY_LOG,[]);}
+function saveLog(a){saveJSON(KEY_LOG,a);}
+
+/* ===========================
+   VALIDERING
+   =========================== */
 function clearErrors(){
-  var ids = ["tool-no","reg-date","desired","actual","operator"];
-  var msgIds = ["err-tool","err-date","err-desired","err-actual","err-operator"];
-  var i;
+  var ids  = ["tool-no","reg-date","desired","actual","operator"];
+  var msgs = ["err-tool","err-date","err-desired","err-actual","err-operator"];
+  var i,f,m;
+
   for(i=0;i<ids.length;i++){
-    var f = $(ids[i]);
+    f = $(ids[i]);
     if(f){ f.className = f.className.replace("input-error",""); }
-    var m = $(msgIds[i]);
+  }
+  for(i=0;i<msgs.length;i++){
+    m = $(msgs[i]);
     if(m){ m.innerHTML=""; }
   }
-  var h = $("hintText");
-  if(h){
-    h.innerHTML = "Felter gemmes automatisk lokalt mens du skriver.";
-    h.style.color = "#6b7280";
-  }
+
+  $("hintText").innerHTML = "Felter gemmes automatisk lokalt mens du skriver.";
+  $("hintText").style.color = "#6b7280";
 }
 
 function validateForm(){
   clearErrors();
   var ok = true;
 
-  var tool = $("tool-no").value;
-  var reg  = $("reg-date").value;
-  var adj  = $("adj-active").checked;
-  var knife= $("knife-active").checked;
-  var des  = $("desired").value;
-  var act  = $("actual").value;
-  var op   = $("operator").value;
+  var tool  = $("tool-no").value;
+  var reg   = $("reg-date").value;
+  var adj   = $("adj-active").checked;
+  var knife = $("knife-active").checked;
+  var des   = $("desired").value;
+  var act   = $("actual").value;
+  var op    = $("operator").value;
 
   if(!tool.replace(/\s+/g,"")){
     $("tool-no").className += " input-error";
     $("err-tool").innerHTML = "Udfyld værktøjsnr.";
-    ok = false;
+    ok=false;
   }
   if(!reg){
     $("reg-date").className += " input-error";
     $("err-date").innerHTML = "Vælg dato.";
-    ok = false;
+    ok=false;
   }
 
   if(!adj && !knife){
-    // mindst én type
-    $("hintText").innerHTML = "Vælg mindst Justering/indkøring og/eller Knivskift.";
+    $("hintText").innerHTML = "Vælg mindst Justering eller Knivskift.";
     $("hintText").style.color = "#b91c1c";
-    ok = false;
+    ok=false;
   }
 
   if(adj){
-    // når der er justering: disse felter er påkrævet
     if(!des.replace(/\s+/g,"")){
       $("desired").className += " input-error";
-      $("err-desired").innerHTML = "Udfyld ønsket værdi ved justering.";
-      ok = false;
+      $("err-desired").innerHTML="Udfyld ønsket værdi.";
+      ok=false;
     }
     if(!act.replace(/\s+/g,"")){
       $("actual").className += " input-error";
-      $("err-actual").innerHTML = "Udfyld aktuel værdi ved justering.";
-      ok = false;
+      $("err-actual").innerHTML="Udfyld aktuel værdi.";
+      ok=false;
     }
     if(!op.replace(/\s+/g,"")){
       $("operator").className += " input-error";
-      $("err-operator").innerHTML = "Udfyld hvem der har justeret.";
-      ok = false;
+      $("err-operator").innerHTML="Udfyld justeret af.";
+      ok=false;
     }
-  }
-
-  if(!ok && $("hintText").style.color !== "#b91c1c"){
-    $("hintText").innerHTML = "Ret venligst de markerede felter.";
-    $("hintText").style.color = "#b91c1c";
-  }
-
-  // hvis hverken justering eller knivskift reelt har indhold
-  if(ok && !adj && !knife && !des && !act && !op && !$("knife-date").value && !$("notes").value){
-    $("hintText").innerHTML = "Der er ingen data at gemme.";
-    $("hintText").style.color = "#b91c1c";
-    ok = false;
   }
 
   return ok;
 }
 
-/* ===== Submit ===== */
+/* ===========================
+   GEM NY REGISTRERING
+   =========================== */
 function submitForm(e){
   if(e && e.preventDefault){e.preventDefault();}
-  if(!validateForm()){return;}
+  if(!validateForm()) return;
 
-  var tool = $("tool-no").value;
-  var reg  = $("reg-date").value;
-  var adj  = $("adj-active").checked;
-  var knife= $("knife-active").checked;
-  var des  = $("desired").value;
-  var act  = $("actual").value;
-  var op   = $("operator").value;
-  var kdate= $("knife-date").value;
-  var notes= $("notes").value;
+  var tool  = $("tool-no").value;
+  var reg   = $("reg-date").value;
+  var adj   = $("adj-active").checked;
+  var knife = $("knife-active").checked;
+  var des   = $("desired").value;
+  var act   = $("actual").value;
+  var op    = $("operator").value;
+  var kdate = $("knife-date").value;
+  var notes = $("notes").value;
 
-  // hvis knivskift valgt uden dato -> sæt dato = registreringsdato
   if(knife && !kdate){
     kdate = reg || todayIso();
-    $("knife-date").value = kdate;
   }
-
-  // trim værdier
-  if(des){ des = des.replace(/^\s+|\s+$/g,""); }
-  if(act){ act = act.replace(/^\s+|\s+$/g,""); }
 
   var entry = {
     id: uuid(),
@@ -598,128 +450,423 @@ function submitForm(e){
     regDate: reg,
     adjActive: adj,
     knifeActive: knife,
-    desired: des || "",
-    actual: act || "",
-    operator: op || "",
-    knifeDate: kdate || "",
-    notes: notes || ""
+    desired: des,
+    actual: act,
+    operator: op,
+    knifeDate: kdate,
+    notes: notes
   };
 
   var arr = getLog();
   arr.push(entry);
   saveLog(arr);
 
-  // ryd kun felter der giver mening at nulstille
-  $("desired").value = "";
-  $("actual").value = "";
-  $("notes").value = "";
-  $("knife-date").value = "";
-  $("adj-active").checked = false;
-  $("knife-active").checked = false;
+  // kø til Power Automate (defineret i DEL 3)
+  queueSend(entry);
 
-  // behold værktøjsnr og navn i udkast
+  // ryd felter – behold kun værktøjsnr via settings
+  $("reg-date").value = todayIso();
+  $("adj-active").checked=false;
+  $("knife-active").checked=false;
+  $("desired").value="";
+  $("actual").value="";
+  $("operator").value="";
+  $("knife-date").value="";
+  $("notes").value="";
+
+  // opdater draft (værktøjsnr gemmes)
   saveDraft();
 
-  var h = $("hintText");
-  if(h){
-    h.innerHTML = "Registrering gemt lokalt. Klar til næste.";
-    h.style.color = "#16a34a";
-  }
+  $("hintText").innerHTML="Registrering gemt. Sendes om ca. 3 minutter.";
+  $("hintText").style.color="#16a34a";
 
   renderLog();
 }
 
-/* ===== Clear form ===== */
+/* ===========================
+   RYD FORMULAR
+   =========================== */
 function clearForm(){
-  clearErrors();
   $("tool-no").value="";
   $("reg-date").value=todayIso();
   $("adj-active").checked=false;
   $("knife-active").checked=false;
   $("desired").value="";
   $("actual").value="";
-
-  var s = loadJSON(KEY_SETTINGS,{});
-  $("operator").value = s.operator || "";
-
+  $("operator").value="";
   $("knife-date").value="";
   $("notes").value="";
-
   removeStorage(KEY_DRAFT);
   saveDraft();
+  clearErrors();
 }
 
-/* ===== Bind events ===== */
+/* ===========================
+   REDIGERING – HJÆLP
+   =========================== */
+function collectEditDraft(id){
+  return {
+    desired: $("e-desired-"+id).value,
+    actual:  $("e-actual-"+id).value,
+    operator:$("e-operator-"+id).value,
+    notes:   $("e-notes-"+id).value,
+    kdate:   $("e-kdate-"+id).value
+  };
+}
+
+function saveEditEntry(id){
+  var arr = getLog();
+  var i, r=null;
+  for(i=0;i<arr.length;i++){
+    if(arr[i].id===id){ r=arr[i]; break; }
+  }
+  if(!r) return;
+
+  r.desired   = $("e-desired-"+id).value;
+  r.actual    = $("e-actual-"+id).value;
+  r.operator  = $("e-operator-"+id).value;
+  r.notes     = $("e-notes-"+id).value;
+  r.knifeDate = $("e-kdate-"+id).value;
+
+  saveLog(arr);
+
+  // opdatér køen hvis denne endnu ikke er sendt (defineret i DEL 3)
+  updateQueueForEntry(r);
+}
+
+/* ===========================
+   ÅBN REDIGERINGSBOKS
+   =========================== */
+function openEdit(id){
+  var box = $("edit-"+id);
+  if(!box)return;
+
+  box.style.display="block";
+  saveOpenEditor(id);
+
+  var arr = getLog();
+  var i, r=null;
+  for(i=0;i<arr.length;i++){
+    if(arr[i].id===id){ r=arr[i]; break; }
+  }
+
+  var desEl = $("e-desired-"+id);
+  var actEl = $("e-actual-"+id);
+  var opEl  = $("e-operator-"+id);
+  var kdEl  = $("e-kdate-"+id);
+  var ntEl  = $("e-notes-"+id);
+
+  var draft = loadEditDraft(id);
+  if(draft){
+    desEl.value = draft.desired || "";
+    actEl.value = draft.actual  || "";
+    opEl.value  = draft.operator|| "";
+    kdEl.value  = draft.kdate   || "";
+    ntEl.value  = draft.notes   || "";
+  }else if(r){
+    desEl.value = r.desired  || "";
+    actEl.value = r.actual   || "";
+    opEl.value  = r.operator || "";
+    kdEl.value  = r.knifeDate|| "";
+    ntEl.value  = r.notes    || "";
+  }
+
+  desEl.oninput = function(){ saveEditDraft(id,collectEditDraft(id)); };
+  actEl.oninput = function(){ saveEditDraft(id,collectEditDraft(id)); };
+  opEl.oninput  = function(){ saveEditDraft(id,collectEditDraft(id)); };
+  ntEl.oninput  = function(){ saveEditDraft(id,collectEditDraft(id)); };
+  kdEl.onchange = function(){ saveEditDraft(id,collectEditDraft(id)); };
+
+  $("e-cancel-"+id).onclick=function(){
+    clearEditDraft(id);
+    clearOpenEditor();
+    box.style.display="none";
+  };
+
+  $("e-save-"+id).onclick=function(){
+    saveEditEntry(id);
+    clearEditDraft(id);
+    clearOpenEditor();
+    box.style.display="none";
+    renderLog();
+  };
+}
+
+/* ===========================
+   RENDER HISTORIK
+   =========================== */
+function renderLog(){
+  var list = $("logList");
+  list.innerHTML="";
+
+  var arr = getLog().slice();
+  arr.sort(function(a,b){
+    return (b.regDate + b.ts).localeCompare(a.regDate + a.ts);
+  });
+
+  if(arr.length===0){
+    var liEmpty=document.createElement("li");
+    liEmpty.className="logitem";
+    liEmpty.innerHTML='<span class="hint">Ingen registreringer endnu.</span>';
+    list.appendChild(liEmpty);
+    return;
+  }
+
+  var i;
+  for(i=0;i<arr.length;i++){
+    var r=arr[i];
+    var li=document.createElement("li");
+    li.className="logitem";
+
+    var head=document.createElement("div");
+    head.className="log-header";
+
+    var main=document.createElement("div");
+    main.className="log-main";
+
+    var badges='<span class="badge badge-tool">'+r.toolNo+'</span>';
+    if(r.adjActive){badges+='<span class="badge badge-adj">Justeret</span>';}
+    if(r.knifeActive){badges+='<span class="badge badge-knife">Knivskift</span>';}
+
+    var tParts=[];
+    tParts.push("Registreret: "+fmtDate(r.regDate));
+    if(r.desired){tParts.push("Ønsket: "+r.desired);}
+    if(r.actual){tParts.push("Aktuel: "+r.actual);}
+
+    main.innerHTML = badges + '<div>'+tParts.join(" · ")+'</div>';
+
+    var meta=document.createElement("div");
+    meta.className="log-meta";
+    var m=[];
+    if(r.operator){m.push("Justeret af: "+r.operator);}
+    if(r.knifeDate){m.push("Knivskift: "+fmtDate(r.knifeDate));}
+    m.push("Oprettet: "+fmtDate(r.ts));
+    meta.innerHTML=m.join("<br>");
+
+    head.appendChild(main);
+    head.appendChild(meta);
+    li.appendChild(head);
+
+    if(r.notes){
+      var nd=document.createElement("div");
+      nd.style.fontSize="12px";
+      nd.style.marginTop="4px";
+      nd.innerHTML="Noter: "+r.notes;
+      li.appendChild(nd);
+    }
+
+    var ed=document.createElement("div");
+    ed.className="editbox";
+    ed.id="edit-"+r.id;
+    ed.innerHTML =
+      '<div class="row">'+
+        '<div class="field small"><label>Ønsket værdi</label>'+
+          '<input id="e-desired-'+r.id+'" type="text"></div>'+
+        '<div class="field small"><label>Aktuel værdi</label>'+
+          '<input id="e-actual-'+r.id+'" type="text"></div>'+
+        '<div class="field small"><label>Justeret af</label>'+
+          '<input id="e-operator-'+r.id+'" type="text"></div>'+
+      '</div>'+
+      '<div class="row">'+
+        '<div class="field small"><label>Dato knivskift</label>'+
+          '<input id="e-kdate-'+r.id+'" type="date"></div>'+
+      '</div>'+
+      '<div class="field full"><label>Noter</label>'+
+        '<textarea id="e-notes-'+r.id+'"></textarea></div>'+
+      '<div class="buttons">'+
+        '<button class="btn" id="e-cancel-'+r.id+'">Annuller</button>'+
+        '<button class="btn btn-primary" id="e-save-'+r.id+'">Gem ændringer</button>'+
+      '</div>';
+    li.appendChild(ed);
+
+    var btn=document.createElement("button");
+    btn.className="btn";
+    btn.style.marginTop="8px";
+    btn.innerHTML="Redigér";
+    btn.onclick=(function(id){
+      return function(){openEdit(id);};
+    })(r.id);
+    li.appendChild(btn);
+
+    list.appendChild(li);
+  }
+
+  // Genåbn sidst åbne editor (MODE A)
+  var last = loadOpenEditor();
+  if(last){
+    setTimeout(function(){openEdit(last);},50);
+  }
+}
+/* ===========================
+   POWER AUTOMATE – 3 MIN KØ
+   =========================== */
+
+// Sæt din nye Power Automate URL her, når du har den:
+var ENDPOINT = "";
+
+var FEED_KEY = PFX + "feedqueue.v1";
+var DELAY_MS = 3 * 60 * 1000; // 3 minutter
+
+function queueSend(entry){
+  // hvis der ikke er endpoint endnu, køer vi stadig lokalt
+  var feed = loadJSON(FEED_KEY,[]);
+  feed.push({
+    ts: new Date().toISOString(),
+    notBefore: new Date(Date.now()+DELAY_MS).toISOString(),
+    payload: entry,
+    sent: false
+  });
+  saveJSON(FEED_KEY,feed);
+  updateStatusLamp();
+}
+
+function sendToPowerAutomate(payload,cb){
+  if(!ENDPOINT || ENDPOINT.indexOf("http")!==0){
+    if(cb)cb(false);
+    return;
+  }
+  try{
+    var x = new XMLHttpRequest();
+    x.open("POST",ENDPOINT,true);
+    x.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+    x.timeout=15000;
+    x.onerror=function(){ if(cb)cb(false); };
+    x.ontimeout=function(){ if(cb)cb(false); };
+    x.onreadystatechange=function(){
+      if(x.readyState===4){
+        var ok=(x.status>=200 && x.status<300);
+        if(cb)cb(ok);
+      }
+    };
+    x.send(JSON.stringify(payload));
+  }catch(e){
+    if(cb)cb(false);
+  }
+}
+
+function flushQueue(){
+  var feed = loadJSON(FEED_KEY,[]);
+  var now = Date.now();
+  var i;
+  for(i=0;i<feed.length;i++){
+    var item = feed[i];
+    if(item.sent) continue;
+    var nb = new Date(item.notBefore).getTime();
+    if(nb>now) continue;
+
+    (function(index){
+      sendToPowerAutomate(feed[index].payload,function(ok){
+        if(ok){
+          var f2 = loadJSON(FEED_KEY,[]);
+          if(f2[index]){
+            f2[index].sent=true;
+            saveJSON(FEED_KEY,f2);
+          }
+        }
+        updateStatusLamp();
+      });
+    })(i);
+  }
+  updateStatusLamp();
+}
+
+function unsentCount(){
+  var f = loadJSON(FEED_KEY,[]);
+  var c=0,i;
+  for(i=0;i<f.length;i++){
+    if(!f[i].sent)c++;
+  }
+  return c;
+}
+
+function updateStatusLamp(){
+  var dot = $("dot");
+  var txt = $("statxt");
+  var n = unsentCount();
+  if(n===0){
+    dot.className="dot";
+    txt.innerHTML="Online";
+  }else{
+    dot.className="dot pending";
+    txt.innerHTML="Afventer afsendelse ("+n+")";
+  }
+}
+
+/* Opdater kø-payload hvis der redigeres inden afsendelse */
+function updateQueueForEntry(entry){
+  var feed = loadJSON(FEED_KEY,[]);
+  var changed=false;
+  var i;
+  for(i=0;i<feed.length;i++){
+    if(!feed[i].sent && feed[i].payload && feed[i].payload.id===entry.id){
+      feed[i].payload = entry;
+      changed=true;
+    }
+  }
+  if(changed){
+    saveJSON(FEED_KEY,feed);
+    updateStatusLamp();
+  }
+}
+
+/* ===========================
+   BIND EVENTS
+   =========================== */
 function bind(){
-  var ids = ["tool-no","reg-date","desired","actual","operator","knife-date","notes"];
+  var ids=["tool-no","reg-date","desired","actual","operator","knife-date","notes"];
   var i;
   for(i=0;i<ids.length;i++){
     (function(id){
-      var el = $(id);
-      if(!el){return;}
-      el.oninput = saveDraft;
-      el.onchange = saveDraft;
+      var el=$(id);
+      if(!el)return;
+      el.oninput=saveDraft;
+      el.onchange=saveDraft;
     })(ids[i]);
   }
 
-  var adj = $("adj-active");
-  var knife = $("knife-active");
-  if(adj){
-    adj.onchange = saveDraft;
-  }
-  if(knife){
-    knife.onchange = function(){
-      // hvis man vælger knivskift og dato er tom, foreslå reg-dato
-      if(knife.checked && !$("knife-date").value){
-        $("knife-date").value = $("reg-date").value || todayIso();
-      }
-      saveDraft();
-    };
-  }
+  $("adj-active").onchange=saveDraft;
+  $("knife-active").onchange=function(){
+    if(this.checked && !$("knife-date").value){
+      $("knife-date").value = $("reg-date").value || todayIso();
+    }
+    saveDraft();
+  };
 
-  var form = $("regForm");
-  if(form){
-    form.onsubmit = submitForm;
-  }
-  var btnClear = $("btn-clear");
-  if(btnClear){
-    btnClear.onclick = clearForm;
-  }
+  $("regForm").onsubmit=submitForm;
+  $("btn-clear").onclick=clearForm;
 
-  var box = $("log-confirm");
-  var btnCL = $("btn-clear-log");
-  var btnCancel = $("btn-log-cancel");
-  var btnDo = $("btn-log-do");
-
-  if(btnCL){
-    btnCL.onclick = function(){
-      if(box){
-        box.style.display = (box.style.display==="block" ? "none" : "block");
-      }
-    };
-  }
-  if(btnCancel){
-    btnCancel.onclick = function(){ if(box){box.style.display="none";} };
-  }
-  if(btnDo){
-    btnDo.onclick = function(){
-      saveLog([]);
-      renderLog();
-      if(box){box.style.display="none";}
-    };
-  }
+  $("btn-clear-log").onclick=function(){
+    var box=$("log-confirm");
+    box.style.display=(box.style.display==="block"?"none":"block");
+  };
+  $("btn-log-cancel").onclick=function(){
+    $("log-confirm").style.display="none";
+  };
+  $("btn-log-do").onclick=function(){
+    saveLog([]);
+    removeStorage(KEY_EDIT);
+    clearOpenEditor();
+    $("log-confirm").style.display="none";
+    renderLog();
+  };
 }
 
-/* ===== Init ===== */
+/* ===========================
+   INIT
+   =========================== */
 window.addEventListener("DOMContentLoaded",function(){
   restoreDraft();
   if(!$("reg-date").value){
-    $("reg-date").value = todayIso();
+    $("reg-date").value=todayIso();
   }
+
   renderLog();
   bind();
+  updateStatusLamp();
+  flushQueue();
+  setInterval(flushQueue,30000); // prøv at sende hver 30. sekund
 });
-</script>
+  </script>
 
 </body>
 </html>
